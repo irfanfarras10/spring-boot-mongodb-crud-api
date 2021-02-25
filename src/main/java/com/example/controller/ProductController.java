@@ -4,9 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.coyote.http11.filters.VoidInputFilter;
-import org.springframework.beans.factory.annotation.Autowired;import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,20 +38,28 @@ public class ProductController {
 	
 	@PostMapping("product")
 	@ResponseStatus(HttpStatus.CREATED)
-	public Product create(@RequestBody Product product) {
-		return this.productRepository.save(product);
+	public String create(@RequestBody Product product) {
+		product.setCreatedDate(LocalDateTime.now());
+		product.setUpdateDate(LocalDateTime.now());
+		this.productRepository.save(product);
+		return "Product Saved";
 	}	
 	
 	@PutMapping("product/{id}")
-	public ResponseEntity<Product> update(@RequestBody Product product, @PathVariable String id) {
-		product.setId(id);
-		Product updatedProduct = productRepository.save(product);
-		return ResponseEntity.ok(updatedProduct);
+	public String update(@RequestBody Product product, @PathVariable String id) {
+		Optional<Product> updatedProduct = productRepository.findById(id);
+		updatedProduct.ifPresent(p -> p.setUpdateDate(LocalDateTime.now()));
+		updatedProduct.ifPresent(p -> p.setSkuSeller(product.getSkuSeller()));
+		updatedProduct.ifPresent(p -> p.setStatus(product.getStatus()));
+		updatedProduct.ifPresent(p -> p.setStockAvailable(product.getStockAvailable()));
+		updatedProduct.ifPresent(p -> productRepository.save(p));
+		return "Product With ID " + id + " " + "Updated";
 	}
 	
 	@DeleteMapping("product/{id}")
-	public void delete(@PathVariable String id) {
+	public String delete(@PathVariable String id) {
 		productRepository.deleteById(id);
+		return "Product With ID " + id + " " + "Deleted";
 	}
 	
 }
