@@ -1,6 +1,8 @@
 package com.example.model;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.Getter;
@@ -12,8 +14,7 @@ import lombok.Setter;
 public class Product {
 	
 	@Id
-	private String storeId;
-	private int skuSeller;
+	private ProductCompositeKey _id;
 	private int stockAvailable;
 	private String status;
 	
@@ -22,3 +23,4 @@ public class Product {
 	private LocalDateTime updateDate;
 	
 }
+

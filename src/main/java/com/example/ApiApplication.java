@@ -28,5 +28,6 @@ public class ApiApplication {
           .paths(PathSelectors.any())                          
           .build();                                           
     }
+	
 
 }
